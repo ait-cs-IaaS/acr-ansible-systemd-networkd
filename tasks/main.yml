@@ -1,0 +1,16 @@
+---
+- name: Ensure config directories exist
+  become: true
+  ansible.builtin.file:
+      path: /etc/systemd/network/{{ item.network_conf }}.d
+      state: directory
+      recurse: true
+  loop: '{{ networking_extra_configs }}'
+
+- name: Create network config
+  become: true
+  ansible.builtin.template:
+      src: network.conf.j2
+      dest: /etc/systemd/network/{{ item.network_conf }}.d/network.conf
+  notify: Restart networkd
+  loop: '{{ networking_extra_configs }}'

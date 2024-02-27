@@ -1,0 +1,15 @@
+{% if item.domains is defined and item.domains | length > 0 %}
+[Network]
+Domains={{ item.domains | join(",") }}
+{% endif %}
+
+{% for _route in item.routes | default([]) %}
+[Route]
+Gateway={{ _route.gateway }}
+Destination={{ _route.dest }}
+{% endfor %}
+
+{% if item.use_dns is defined %}
+[DHCP]
+UseDNS={% if item.use_dns | bool %}true{% else %}false{% endif %}
+{% endif %}
